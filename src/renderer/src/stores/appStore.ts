@@ -646,7 +646,7 @@ function startBootstrap(set: Setter, get: Getter): Promise<void> {
       bootPromise = null
       set({
         ready: true,
-        bootError: err instanceof Error ? err.message : 'Could not start Claude Code Bots.'
+        bootError: err instanceof Error ? err.message : 'Could not start Claude Bot.'
       })
     }
   })()

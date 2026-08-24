@@ -41,7 +41,7 @@ export interface AppError extends Error {
 export function bridge(): BotApi {
   const api = window.botApp
   if (!api) {
-    throw Object.assign(new Error('The app bridge failed to load. Restart Claude Code Bots.'), {
+    throw Object.assign(new Error('The app bridge failed to load. Restart Claude Bot.'), {
       code: 'internal' as IpcErrorCode
     })
   }

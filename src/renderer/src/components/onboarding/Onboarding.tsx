@@ -276,7 +276,7 @@ export function Onboarding({ onDone }: { onDone: () => void }): ReactElement {
         style={{ height: 'var(--header-h)', padding: `0 12px 0 ${titleBarInsetLeft()}px` }}
       >
         <span className="flex items-center gap-[8px]">
-          <BotAvatar name="Claude Code Bots" avatarValue="squircle" accent="violet" size={20} />
+          <BotAvatar name="Claude Bot" avatarValue="squircle" accent="violet" size={20} />
           <span
             style={{
               fontSize: 'var(--fs-micro)',
@@ -285,7 +285,7 @@ export function Onboarding({ onDone }: { onDone: () => void }): ReactElement {
               color: 'var(--fg-tertiary)'
             }}
           >
-            Claude Code Bots
+            Claude Bot
           </span>
         </span>
         <Button variant="ghost" size="sm" className="no-drag" onClick={onDone}>

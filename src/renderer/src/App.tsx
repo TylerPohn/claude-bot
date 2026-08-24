@@ -366,7 +366,7 @@ function BootErrorScreen({ message }: { message: string }): ReactElement {
     <FullWindow>
       <Panel
         icon={<AlertTriangle size={24} strokeWidth={1.5} style={{ color: 'var(--fg-danger)' }} />}
-        title="Claude Code Bots could not start"
+        title="Claude Bot could not start"
         body="Your Bots and transcripts are stored locally and were not touched. Restarting usually clears this."
         detail={message}
       >
@@ -392,7 +392,7 @@ function BootErrorScreen({ message }: { message: string }): ReactElement {
  * ------------------------------------------------------------------ */
 
 /**
- * Claude Code Bots is a client for the Claude Code the user already has. If that
+ * Claude Bot is a client for the Claude Code the user already has. If that
  * is missing or signed out, nothing in the app can run, so this replaces the
  * whole window with the specific fix — never a generic error.
  */
@@ -416,7 +416,7 @@ function RuntimeGate(): ReactElement {
     availability === 'unauthenticated'
       ? {
           title: 'Claude Code isn’t signed in',
-          body: 'Run `claude` once in a terminal and finish signing in. Claude Code Bots uses your existing Claude subscription — there is no separate API key to enter.'
+          body: 'Run `claude` once in a terminal and finish signing in. Claude Bot uses your existing Claude subscription — there is no separate API key to enter.'
         }
       : availability === 'error'
         ? {
@@ -425,7 +425,7 @@ function RuntimeGate(): ReactElement {
           }
         : {
             title: 'Claude Code isn’t installed',
-            body: 'Claude Code Bots runs your locally installed Claude Code. Install it, sign in once, then come back — everything else is already set up.'
+            body: 'Claude Bot runs your locally installed Claude Code. Install it, sign in once, then come back — everything else is already set up.'
           }
 
   return (

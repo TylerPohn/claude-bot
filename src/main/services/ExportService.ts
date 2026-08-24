@@ -52,7 +52,7 @@ import type {
  * Export document shapes
  * ------------------------------------------------------------------ */
 
-const BACKUP_FORMAT = 'claude-code-bots-backup'
+const BACKUP_FORMAT = 'claude-bot-backup'
 const BACKUP_FORMAT_VERSION = 1
 
 interface BackupManifest {
@@ -471,7 +471,7 @@ function safeFileName(name: string): string {
 
 export async function exportBackup(): Promise<{ path: string | null }> {
   const win = parentWindow()
-  const defaultPath = join(app.getPath('documents'), 'claude-code-bots-export')
+  const defaultPath = join(app.getPath('documents'), 'claude-bot-export')
   const options = {
     title: 'Export backup',
     defaultPath,
@@ -693,7 +693,7 @@ async function readJsonFile(path: string): Promise<unknown> {
   try {
     raw = await readFile(path, 'utf8')
   } catch {
-    throw new Error(`Missing ${basenameOf(path)} — this folder is not a Claude Code Bots backup.`)
+    throw new Error(`Missing ${basenameOf(path)} — this folder is not a Claude Bot backup.`)
   }
   try {
     return JSON.parse(raw) as unknown
@@ -718,7 +718,7 @@ function validateManifest(value: unknown): BackupManifest {
   }
   const record = value as Record<string, unknown>
   if (record['format'] !== BACKUP_FORMAT) {
-    throw new Error('This folder is not a Claude Code Bots backup.')
+    throw new Error('This folder is not a Claude Bot backup.')
   }
   const version = record['formatVersion']
   if (typeof version !== 'number' || !Number.isInteger(version)) {
@@ -726,7 +726,7 @@ function validateManifest(value: unknown): BackupManifest {
   }
   if (version > BACKUP_FORMAT_VERSION) {
     throw new Error(
-      `This backup was written by a newer version of Claude Code Bots (format ${version}). Update the app and try again.`
+      `This backup was written by a newer version of Claude Bot (format ${version}). Update the app and try again.`
     )
   }
   return {
@@ -1320,7 +1320,7 @@ function renderMarkdown(input: {
   const lines: string[] = []
 
   lines.push(`# ${input.name}`, '')
-  lines.push(`_Exported from Claude Code Bots on ${formatTimestamp(nowIso())}._`, '')
+  lines.push(`_Exported from Claude Bot on ${formatTimestamp(nowIso())}._`, '')
   lines.push(`- **Type:** ${input.type === 'direct' ? 'Direct chat' : 'Group chat'}`)
   if (input.memberNames.length > 0) {
     lines.push(`- **Bots:** ${input.memberNames.join(', ')}`)

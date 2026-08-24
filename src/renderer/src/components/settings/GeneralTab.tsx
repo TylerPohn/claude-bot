@@ -106,11 +106,11 @@ export function GeneralTab({ settings }: { settings: AppSettings }): ReactElemen
 
       <SettingsSection title="At launch">
         <SettingRow
-          label="Open Claude Code Bots at login"
+          label="Open Claude Bot at login"
           description="Starts the app in the background when you sign in to this computer."
           control={
             <Switch
-              label="Open Claude Code Bots at login"
+              label="Open Claude Bot at login"
               checked={settings.launchAtLogin}
               onChange={(checked) => save({ launchAtLogin: checked })}
             />

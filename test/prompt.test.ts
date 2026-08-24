@@ -107,7 +107,7 @@ function prompt(overrides: Partial<Parameters<typeof buildPrompt>[0]> = {}): str
 
 test('the first turn of a session carries the full profile layer', () => {
   const text = prompt()
-  assert.ok(text.startsWith('You are a persistent AI teammate inside a desktop app called Claude Code Bots.'))
+  assert.ok(text.startsWith('You are a persistent AI teammate inside a desktop app called Claude Bot.'))
   assert.ok(text.includes('Name: Builder'))
   assert.ok(text.includes('Title: Senior implementation engineer'))
   assert.ok(text.includes('Standing instructions:'))

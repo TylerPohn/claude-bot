@@ -150,7 +150,7 @@ export function SettingsModal({
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Claude Code Bots settings"
+        aria-label="Claude Bot settings"
         tabIndex={-1}
         className="relative flex overflow-hidden outline-none"
         style={{
@@ -188,7 +188,7 @@ export function SettingsModal({
                 textTransform: 'uppercase'
               }}
             >
-              Claude Code Bots
+              Claude Bot
             </span>
             <span
               className="text-[var(--fg-primary)]"

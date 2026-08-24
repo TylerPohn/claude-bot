@@ -34,7 +34,7 @@ export const MCP_PROTOCOL_VERSION = '2024-11-05'
  * changes every tool name the model sees (and every entry in `allowedTools`).
  * Underscores only — the CLI's tool-name grammar does not accept dashes.
  */
-export const MCP_SERVER_NAME = 'claude_code_bots'
+export const MCP_SERVER_NAME = 'claude_bot'
 
 export const MCP_SERVER_VERSION = '1.0.0'
 

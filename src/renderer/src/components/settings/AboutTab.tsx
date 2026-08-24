@@ -29,7 +29,7 @@ function pad(label: string): string {
 
 function formatDiagnostics(report: DiagnosticsReport): string {
   const lines: string[] = [
-    'Claude Code Bots — diagnostics',
+    'Claude Bot — diagnostics',
     `Generated        ${new Date().toISOString()}`,
     '',
     `${pad('App')}${report.appVersion}`,
@@ -111,7 +111,7 @@ export function AboutTab(): ReactElement {
           />
         ) : (
           <>
-            <VersionRow label="Claude Code Bots" value={report?.appVersion} />
+            <VersionRow label="Claude Bot" value={report?.appVersion} />
             <VersionRow label="Electron" value={report?.electronVersion} />
             <VersionRow label="Chromium" value={chromiumVersion()} />
             <VersionRow label="Node" value={report?.nodeVersion} />
@@ -155,7 +155,7 @@ export function AboutTab(): ReactElement {
                 <strong style={{ fontWeight: 550, color: 'var(--fg-primary)' }}>
                   Inference is not local.
                 </strong>{' '}
-                No model runs on this computer. Claude Code Bots stores and displays your Bots and
+                No model runs on this computer. Claude Bot stores and displays your Bots and
                 transcripts locally; the thinking happens at Anthropic, billed against your own
                 Claude subscription. This app has no server, no account of its own, and no analytics.
               </Note>

@@ -31,7 +31,7 @@ export function DoneStep({ bot }: { bot: Bot | null }): ReactElement {
             <BotAvatar bot={bot} size={88} />
           ) : (
             <BotAvatar
-              name="Claude Code Bots"
+              name="Claude Bot"
               avatarType="shape"
               avatarValue="squircle"
               accent="violet"

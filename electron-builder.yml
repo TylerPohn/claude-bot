@@ -1,5 +1,5 @@
-appId: com.claudecodebots.app
-productName: Claude Code Bots
+appId: com.claudebot.app
+productName: Claude Bot
 directories:
   buildResources: build
   output: dist
@@ -41,7 +41,7 @@ mac:
   category: public.app-category.developer-tools
   darkModeSupport: true
   extendInfo:
-    NSAppleEventsUsageDescription: Claude Code Bots opens Terminal so you can sign in to Claude Code.
+    NSAppleEventsUsageDescription: Claude Bot opens Terminal so you can sign in to Claude Code.
 dmg:
   # The mounted volume names the state of the build, so a recipient reads
   # "unsigned" in the Finder title bar before they drag anything anywhere.
@@ -49,7 +49,7 @@ dmg:
 win:
   target:
     - nsis
-  executableName: claude-code-bots
+  executableName: claude-bot
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

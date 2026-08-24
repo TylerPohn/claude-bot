@@ -143,8 +143,8 @@ export async function openLoginTerminal(): Promise<void> {
     const scriptPath = join(userDataDir(), LOGIN_SCRIPT_FILE)
     const script = [
       '#!/bin/sh',
-      '# Written by Claude Code Bots to open an interactive Claude Code session.',
-      'echo "Claude Code Bots — sign in to Claude Code in this window."',
+      '# Written by Claude Bot to open an interactive Claude Code session.',
+      'echo "Claude Bot — sign in to Claude Code in this window."',
       'echo "If you are not prompted automatically, type /login and press return."',
       'echo ""',
       `exec ${quoteForShell(executable)}`,
@@ -173,8 +173,8 @@ export async function openLoginTerminal(): Promise<void> {
     const scriptPath = join(userDataDir(), WINDOWS_LOGIN_SCRIPT_FILE)
     const script = [
       '@echo off',
-      'rem Written by Claude Code Bots to open an interactive Claude Code session.',
-      'echo Claude Code Bots - sign in to Claude Code in this window.',
+      'rem Written by Claude Bot to open an interactive Claude Code session.',
+      'echo Claude Bot - sign in to Claude Code in this window.',
       'echo If you are not prompted automatically, type /login and press return.',
       'echo.',
       // `call`, because `claude` is normally a .cmd shim: without it control never

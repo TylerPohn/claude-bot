@@ -46,7 +46,7 @@ import { notify, setFocusedConversation, setWindowFocused } from '@main/services
 import { initialize as initializeRuntimeStatus } from '@main/services/RuntimeService'
 import { createWindow, focusMainWindow, getMainWindow, installSecurityHandlers } from '@main/window'
 
-const APP_NAME = 'Claude Code Bots'
+const APP_NAME = 'Claude Bot'
 
 let schedulerReady = false
 let shuttingDown = false

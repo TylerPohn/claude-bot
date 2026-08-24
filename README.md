@@ -1,4 +1,4 @@
-# Claude Code Bots
+# Claude Bot
 
 **Your Claude Code team, in a chat app.**
 
@@ -46,16 +46,16 @@ npm run typecheck    # both tsconfig projects
 ### The build is unsigned, and a downloaded copy will not open
 
 There is no Apple Developer ID behind this project, so `dist:dmg` produces
-`claude-code-bots-<version>-<arch>-unsigned.dmg` — named that way on purpose. A build that has
+`claude-bot-<version>-<arch>-unsigned.dmg` — named that way on purpose. A build that has
 travelled through a browser, AirDrop or a chat app arrives with `com.apple.quarantine` set, and
-macOS refuses it with **"Claude Code Bots is damaged and can't be opened."** Nothing is damaged:
+macOS refuses it with **"Claude Bot is damaged and can't be opened."** Nothing is damaged:
 the message is what Gatekeeper says about an unsigned bundle it cannot validate.
 
 Right-click → Open does *not* help — that gesture overrides a policy decision, and this is a
 signature-validation failure. The recipient's one-line fix is:
 
 ```bash
-xattr -dr com.apple.quarantine "/Applications/Claude Code Bots.app"
+xattr -dr com.apple.quarantine "/Applications/Claude Bot.app"
 ```
 
 Only run that on a build you compiled yourself or got from someone you trust; the same command

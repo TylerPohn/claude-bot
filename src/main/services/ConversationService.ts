@@ -591,7 +591,7 @@ function truncateQuote(text: string): string {
 }
 
 /**
- * `mcp__claude_code_bots__send_message_to_bot`. Returns a text result for the
+ * `mcp__claude_bot__send_message_to_bot`. Returns a text result for the
  * calling model rather than throwing — a tool error would just make Claude retry.
  */
 export async function handoffToBot(input: {
@@ -703,7 +703,7 @@ function claimGroupPost(jobId: string | null): GroupPostClaim {
 }
 
 /**
- * `mcp__claude_code_bots__send_message_to_group`. Broadcasts into the transcript
+ * `mcp__claude_bot__send_message_to_group`. Broadcasts into the transcript
  * without waking anyone: fanning out to every member from inside a Bot turn is
  * exactly the ping-pong PRD 13.3 exists to prevent. Other Bots pick the message
  * up through the group context bridge on their next turn.
@@ -759,7 +759,7 @@ export async function handoffToGroup(input: {
   }
 }
 
-/** `mcp__claude_code_bots__list_bots`. */
+/** `mcp__claude_bot__list_bots`. */
 export async function listBotsInConversation(input: {
   conversationId: string
 }): Promise<{ ok: boolean; text: string }> {

@@ -122,8 +122,8 @@ test('MCP tools are titled "<server> / <tool>"', () => {
   assert.equal(github.title, 'github / create_issue')
 
   // Our own bridge server name contains underscores; the split must not be greedy.
-  const bridge = mapToolStart('mcp__claude_code_bots__send_message_to_bot', {}, CWD)
-  assert.equal(bridge.title, 'claude_code_bots / send_message_to_bot')
+  const bridge = mapToolStart('mcp__claude_bot__send_message_to_bot', {}, CWD)
+  assert.equal(bridge.title, 'claude_bot / send_message_to_bot')
 })
 
 test('parseMcpToolName splits on the first double underscore only', () => {
@@ -131,8 +131,8 @@ test('parseMcpToolName splits on the first double underscore only', () => {
     server: 'github',
     tool: 'create_issue'
   })
-  assert.deepEqual(parseMcpToolName('mcp__claude_code_bots__list_bots'), {
-    server: 'claude_code_bots',
+  assert.deepEqual(parseMcpToolName('mcp__claude_bot__list_bots'), {
+    server: 'claude_bot',
     tool: 'list_bots'
   })
   assert.equal(parseMcpToolName('Bash'), null)

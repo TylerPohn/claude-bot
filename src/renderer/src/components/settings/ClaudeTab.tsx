@@ -362,7 +362,7 @@ export function ClaudeTab({ settings }: { settings: AppSettings }): ReactElement
         {availability === 'unauthenticated' ? (
           <Note tone="warning" className="mt-[12px]">
             Run <Mono>claude</Mono> once in a terminal and finish signing in with your Claude
-            account. Claude Code Bots never asks for an API key — it uses the session Claude Code
+            account. Claude Bot never asks for an API key — it uses the session Claude Code
             already has.
           </Note>
         ) : null}

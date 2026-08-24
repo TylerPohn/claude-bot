@@ -1,4 +1,4 @@
-# Claude Code Bots — Implementation Specification v1.0
+# Claude Bot — Implementation Specification v1.0
 
 **Target:** Electron desktop app (macOS arm64/x64, Windows x64/arm64). Messenger-shaped multi-agent client. Visual language emulates Grok Bot (xAI, Aug 2026): near-black surfaces, translucent borders, no hard strokes, iMessage-style bubbles, flat blob avatars with white eyes, compact 13/14/15/16 type scale.
 
@@ -22,7 +22,7 @@ Ground rules that the tokens encode — do not violate them:
 
 ```css
 /* ============================================================
-   Claude Code Bots — design tokens
+   Claude Bot — design tokens
    Import once, before Tailwind's @theme layer.
    ============================================================ */
 
@@ -812,7 +812,7 @@ Empty state, verbatim doctrine when cross-conversation search is unavailable: *"
 
 ### 3.8 Settings dialog
 
-Title: **"Claude Code Bots settings"**. Two-pane: 200px nav left (`--surface-1`), content right (`--surface-3`). Dialog 880 × 620, radius 12, `--shadow-dialog`. Nav item 32px, 14px, radius 6, selected pill as in §2.2.
+Title: **"Claude Bot settings"**. Two-pane: 200px nav left (`--surface-1`), content right (`--surface-3`). Dialog 880 × 620, radius 12, `--shadow-dialog`. Nav item 32px, 14px, radius 6, selected pill as in §2.2.
 
 Full tree [G, adapted]:
 
@@ -1030,7 +1030,7 @@ Every version below is pinned exactly. Ranges are how a working build silently d
 
 ```jsonc
 {
-  "name": "claude-code-bots",
+  "name": "claude-bot",
   "version": "0.1.0",
   "main": "out/main/index.js",
   // DO NOT add "type": "module". See §5.3.
@@ -1324,7 +1324,7 @@ Note the **negative pid** — that is what signals the group. `tree-kill` exists
 
 **Testing trap:** `open -W YourApp.app` from a terminal **inherits your shell environment** and shows a full PATH — a false negative. Reproduce the real condition with:
 ```bash
-env -i HOME="$HOME" TMPDIR="$TMPDIR" /usr/bin/open -W dist/mac-arm64/ClaudeCodeBots.app
+env -i HOME="$HOME" TMPDIR="$TMPDIR" /usr/bin/open -W dist/mac-arm64/ClaudeBot.app
 ```
 
 **Fix — resolve the login shell's PATH once, asynchronously, at startup:**
@@ -1347,8 +1347,8 @@ Markers are required because rc files print banners. The explicit `timeout` is r
 
 ```jsonc
 "build": {
-  "appId": "com.claudecodebots.app",
-  "productName": "Claude Code Bots",
+  "appId": "com.claudebot.app",
+  "productName": "Claude Bot",
   "directories": { "output": "dist" },
   "files": [
     "out/**/*",
@@ -1376,7 +1376,7 @@ Markers are required because rc files print banners. The explicit `timeout` is r
 
 If you choose ad-hoc (`"identity": "-"`) instead of `null`, you must also set `"hardenedRuntime": false` **or** add `com.apple.security.cs.disable-library-validation` to entitlements — hardened runtime defaults to true and its library validation rejects the pre-signed Electron framework's different Team ID, and the app will not launch.
 
-Distributing an unsigned build to a colleague: a locally-built app runs fine, but the same app zipped and downloaded picks up `com.apple.quarantine` and macOS reports *"damaged and can't be opened"* (misleading — it means unsigned + quarantined). Recipient fix: `xattr -dr com.apple.quarantine /Applications/"Claude Code Bots.app"`. For CI, `CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --dir` suppresses keychain discovery without touching config.
+Distributing an unsigned build to a colleague: a locally-built app runs fine, but the same app zipped and downloaded picks up `com.apple.quarantine` and macOS reports *"damaged and can't be opened"* (misleading — it means unsigned + quarantined). Recipient fix: `xattr -dr com.apple.quarantine /Applications/"Claude Bot.app"`. For CI, `CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --dir` suppresses keychain discovery without touching config.
 
 ### 5.10 Markdown rendering
 

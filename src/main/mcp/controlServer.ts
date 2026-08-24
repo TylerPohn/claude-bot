@@ -95,7 +95,7 @@ export function startControlServer(deps: ControlServerDeps): Promise<{ port: num
   const server = createServer((req, res) => {
     handleRequest(req, res).catch((err: unknown) => {
       log.error('mcp', 'control request handler threw', err)
-      writeJson(res, 500, { ok: false, text: 'Internal error in Claude Code Bots.' })
+      writeJson(res, 500, { ok: false, text: 'Internal error in Claude Bot.' })
     })
   })
 
@@ -226,7 +226,7 @@ function readBody(req: IncomingMessage): Promise<BodyResult> {
 async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
   const current = state
   if (!current) {
-    writeJson(res, 503, { ok: false, text: 'Claude Code Bots is shutting down.' })
+    writeJson(res, 503, { ok: false, text: 'Claude Bot is shutting down.' })
     return
   }
 
@@ -608,7 +608,7 @@ function materializeBridge(bundledPath: string, appPath: string): string {
   if (/^\s*(import|export)\s/m.test(source)) moduleType = 'module'
 
   const pkgPath = join(dir, 'package.json')
-  const pkgBody = `${JSON.stringify({ name: 'claude-code-bots-mcp-bridge', private: true, type: moduleType }, null, 2)}\n`
+  const pkgBody = `${JSON.stringify({ name: 'claude-bot-mcp-bridge', private: true, type: moduleType }, null, 2)}\n`
   writeIfChanged(pkgPath, pkgBody)
 
   const scriptPath = join(dir, 'mcp-bridge.js')

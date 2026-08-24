@@ -17,7 +17,7 @@ import { log } from '@main/lib/logger'
 import { runMigrations } from '@main/db/migrate'
 
 /** Filename inside Electron's userData dir. `@main/lib/paths` builds the full path from this. */
-export const DATABASE_FILENAME = 'claude-code-bots.db'
+export const DATABASE_FILENAME = 'claude-bot.db'
 
 let instance: BetterSqlite3.Database | null = null
 
@@ -50,7 +50,7 @@ export function initDatabase(dbPath?: string): BetterSqlite3.Database {
   } catch (e) {
     throw new AppError(
       'io',
-      'Could not open the Claude Code Bots database.',
+      'Could not open the Claude Bot database.',
       `${file}: ${e instanceof Error ? e.message : String(e)}`
     )
   }

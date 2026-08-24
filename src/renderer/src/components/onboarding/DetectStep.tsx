@@ -48,7 +48,7 @@ export function DetectStep({
           label: 'Not found',
           tone: 'var(--fg-danger)',
           icon: <CircleAlert size={18} strokeWidth={1.75} />,
-          body: 'Claude Code Bots could not find a Claude Code executable on this computer.'
+          body: 'Claude Bot could not find a Claude Code executable on this computer.'
         }
       : availability === 'error'
         ? {

@@ -1,4 +1,4 @@
-# Claude Code Bots — Module Contract
+# Claude Bot — Module Contract
 
 **This document is binding.** Every implementation agent builds to the exact file paths and
 exported symbol names below. Do not rename exports, do not move files, do not add a second
@@ -125,7 +125,7 @@ export function parseErrorCount(): number
 ### `src/main/lib/paths.ts`
 ```ts
 export function userDataDir(): string          // app.getPath('userData')
-export function databasePath(): string         // userDataDir()/claude-code-bots.db
+export function databasePath(): string         // userDataDir()/claude-bot.db
 export function logsDir(): string
 export function isMac(): boolean
 ```
@@ -625,8 +625,8 @@ Tools:
 Add to `electron.vite.config.ts` main input: `mcpBridge: resolve('src/main/mcp/bridge.ts')`.
 The bridge must have **zero imports** outside `node:` builtins.
 
-Server name in the MCP config: `claude_code_bots` (tools become
-`mcp__claude_code_bots__send_message_to_bot`). Those three tool names must be appended to
+Server name in the MCP config: `claude_bot` (tools become
+`mcp__claude_bot__send_message_to_bot`). Those three tool names must be appended to
 `allowedTools` for every job so Claude can call them without a prompt.
 
 ---

@@ -1,9 +1,9 @@
 {
-  "name": "claude-code-bots",
+  "name": "claude-bot",
   "version": "1.0.0",
   "description": "Your Claude Code team, in a chat app.",
   "main": "./out/main/index.js",
-  "author": "Claude Code Bots",
+  "author": "Claude Bot",
   "license": "MIT",
   "private": true,
   "scripts": {

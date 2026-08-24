@@ -90,7 +90,7 @@ function oneLine(value: string | null | undefined): string {
 function profileLayer(input: PromptInput): string {
   const { bot } = input
   const lines = [
-    'You are a persistent AI teammate inside a desktop app called Claude Code Bots.',
+    'You are a persistent AI teammate inside a desktop app called Claude Bot.',
     '',
     'Identity:',
     `Name: ${oneLine(bot.name)}`

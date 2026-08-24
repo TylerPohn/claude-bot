@@ -31,7 +31,7 @@ import type { IncomingMessage } from 'node:http'
  * ------------------------------------------------------------------ */
 
 const MCP_PROTOCOL_VERSION = '2024-11-05'
-const SERVER_NAME = 'claude_code_bots'
+const SERVER_NAME = 'claude_bot'
 const SERVER_VERSION = '1.0.0'
 
 const ERR_METHOD_NOT_FOUND = -32601
@@ -180,7 +180,7 @@ const env = readEnv()
 
 function logStderr(message: string): void {
   // Trailing newline keeps our lines from merging with the CLI's own stderr.
-  process.stderr.write(`[claude-code-bots mcp] ${message}\n`)
+  process.stderr.write(`[claude-bot mcp] ${message}\n`)
 }
 
 function writeFrame(frame: unknown): void {
@@ -262,7 +262,7 @@ function callControlServer(
           if (res.statusCode !== 200) {
             finish({
               ok: false,
-              text: `Claude Code Bots rejected the request (HTTP ${res.statusCode ?? 0}). ${text.slice(0, 500)}`.trim()
+              text: `Claude Bot rejected the request (HTTP ${res.statusCode ?? 0}). ${text.slice(0, 500)}`.trim()
             })
             return
           }
@@ -276,13 +276,13 @@ function callControlServer(
               })
               return
             }
-            finish({ ok: false, text: 'Claude Code Bots returned an unexpected response.' })
+            finish({ ok: false, text: 'Claude Bot returned an unexpected response.' })
           } catch {
-            finish({ ok: false, text: 'Claude Code Bots returned a malformed response.' })
+            finish({ ok: false, text: 'Claude Bot returned a malformed response.' })
           }
         })
         res.on('error', (err: Error) => {
-          finish({ ok: false, text: `Lost the connection to Claude Code Bots: ${err.message}` })
+          finish({ ok: false, text: `Lost the connection to Claude Bot: ${err.message}` })
         })
       }
     )
@@ -291,7 +291,7 @@ function callControlServer(
       finish({
         ok: false,
         text:
-          `Could not reach the Claude Code Bots app (${err.message}). ` +
+          `Could not reach the Claude Bot app (${err.message}). ` +
           'The app may have been closed. Continue with your own work and tell the human that the handoff did not go through.'
       })
     })
@@ -300,7 +300,7 @@ function callControlServer(
       req.destroy()
       finish({
         ok: false,
-        text: 'The Claude Code Bots app did not respond in time. The handoff was not delivered.'
+        text: 'The Claude Bot app did not respond in time. The handoff was not delivered.'
       })
     })
 
@@ -363,7 +363,7 @@ async function handleToolsCall(id: JsonRpcId, params: unknown): Promise<void> {
     respond(
       id,
       toolResult(
-        'Claude Code Bots did not pass connection details to this MCP server, so Bot-to-Bot handoffs are unavailable for this run. Continue on your own and mention the failure in your reply.',
+        'Claude Bot did not pass connection details to this MCP server, so Bot-to-Bot handoffs are unavailable for this run. Continue on your own and mention the failure in your reply.',
         true
       )
     )
@@ -516,7 +516,7 @@ async function processLine(line: string): Promise<void> {
   } catch (err) {
     logStderr(`handler threw: ${String(err)}`)
     if (message.id !== undefined) {
-      respondError(message.id, ERR_INTERNAL, 'Internal error in the Claude Code Bots MCP bridge')
+      respondError(message.id, ERR_INTERNAL, 'Internal error in the Claude Bot MCP bridge')
     }
   }
 }

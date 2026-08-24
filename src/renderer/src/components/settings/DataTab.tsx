@@ -104,7 +104,7 @@ export function DataTab(): ReactElement {
     <>
       <SettingsSection
         title="On this computer"
-        description="Claude Code Bots has no server of its own. Everything below lives in one folder on this machine and is never uploaded by this app."
+        description="Claude Bot has no server of its own. Everything below lives in one folder on this machine and is never uploaded by this app."
       >
         <SettingRow
           label="What is stored"

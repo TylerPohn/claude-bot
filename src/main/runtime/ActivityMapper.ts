@@ -126,7 +126,7 @@ export function displayPath(target: string, cwd: string): string {
 export function parseMcpToolName(name: string): { server: string; tool: string } | null {
   if (!name.startsWith('mcp__')) return null
   const rest = name.slice('mcp__'.length)
-  // Server names legitimately contain single underscores (`claude_code_bots`), so the
+  // Server names legitimately contain single underscores (`claude_bot`), so the
   // split point is the FIRST double underscore, not the last.
   const sep = rest.indexOf('__')
   if (sep <= 0) return null

@@ -410,7 +410,7 @@ export function createWindow(): BrowserWindow {
     // y = (H - 16) / 2 → 20 for H = 56. (Measured on real macOS chrome at
     // y = 18, 20 and 21; centre = y + 8 in all three.) 18 read 2px high.
     trafficLightPosition: { x: 20, y: 20 },
-    title: 'Claude Code Bots',
+    title: 'Claude Bot',
     webPreferences: {
       // `__dirname` is native in the CommonJS output and shimmed by electron-vite
       // in the ESM output, so it is correct either way.

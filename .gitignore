@@ -14,7 +14,7 @@ release/
 # hold real transcripts and Claude session ids, so they must never be committed.
 *-userdata/
 userdata/
-claude-code-bots.db
+claude-bot.db
 *.db
 *.db-wal
 *.db-shm
