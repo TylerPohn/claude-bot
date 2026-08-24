@@ -1,0 +1,10 @@
+# Everything in this repository is owned by @TylerPohn.
+#
+# GitHub auto-requests a review from the owners listed here on every pull
+# request, and branch protection on `main` requires a code-owner approval before
+# a PR can be merged. Together that means outside contributions are welcome but
+# nothing lands without the owner signing off on it.
+#
+# The pattern is last-match-wins, so this single line covers every path.
+
+*       @TylerPohn
