@@ -1,20 +1,36 @@
 # Claude Bot
 
-**Your Claude Code team, in a chat app.**
+### Grok Bot, for Claude Code.
 
-A local-first macOS/Windows desktop app that turns your existing Claude Code installation into a
-roster of persistent, named AI teammates. Instead of juggling terminal sessions, you get a
-messaging app: a sidebar of Bots, 1:1 chats, group chats, `@mentions`, and visible handoffs.
+xAI's Grok Bot made the good argument that the interesting thing about durable agents isn't the
+agent — it's the **messaging metaphor**: one roster, persistent named teammates with their own
+jobs, group chats, `@mentions`, visible handoffs, work happening in parallel.
 
-- **Local-first.** Bots, transcripts and settings live in SQLite on your machine.
-- **Uses the Claude Code you already have.** Every turn shells out to your installed `claude`
-  binary under your existing subscription.
-- **No API key.** Not now, not later. The app never reads, stores or asks for an Anthropic
-  credential.
+Claude Bot is that interaction model on top of the **Claude Code CLI you already have**. Same idea,
+different engine — and where Grok Bot gives each Bot a cloud computer, every Bot here runs locally
+through your own `claude` binary, under your existing subscription.
+
+- **Local-first.** Bots, transcripts and settings live in SQLite on your machine. No backend.
+- **Uses the Claude Code you already have.** Every turn shells out to your installed `claude`.
+- **No API key.** Not now, not later. The app never reads, stores or asks for an Anthropic credential.
+
+![Group chat with four Bots, an @everyone fan-out and a visible Bot-to-Bot handoff](docs/screenshots/group-chat.png)
+
+> A group conversation. `@everyone` fanned out to four Bots, Reviewer handed work to Test Engineer
+> in the open, and each reply carries a one-line summary of the tools that Bot actually ran.
 
 > Chats are stored by this app on your computer. When a Bot runs, the app invokes your installed
 > Claude Code client, which sends model requests according to your Anthropic account and privacy
 > settings. Inference is **not** local.
+
+---
+
+## What it looks like
+
+| | |
+|---|---|
+| ![A 1:1 chat rendering markdown and a syntax-highlighted SQL block](docs/screenshots/direct-chat.png) <br> **1:1 chat.** iMessage-shaped bubbles, no per-message avatars or timestamps — time lives in a centred day separator. Tool activity collapses to one line above the answer. | ![The New Bot sheet with a live preview and the shape and colour avatar picker](docs/screenshots/new-bot.png) <br> **Creating a Bot.** Standing instructions, a working folder, model and permission mode — with a live preview and the shape/colour avatar picker. |
+| ![Settings showing the detected Claude Code version, path and sign-in state](docs/screenshots/settings.png) <br> **Settings → Claude Code.** Detected version, resolved binary path and auth health, checked without spending model quota. | ![The first-run onboarding welcome screen](docs/screenshots/onboarding.png) <br> **First run.** Detects Claude Code, verifies sign-in, then hands you six Bot presets to start from. |
 
 ---
 
@@ -46,10 +62,10 @@ npm run typecheck    # both tsconfig projects
 ### The build is unsigned, and a downloaded copy will not open
 
 There is no Apple Developer ID behind this project, so `dist:dmg` produces
-`claude-bot-<version>-<arch>-unsigned.dmg` — named that way on purpose. A build that has
-travelled through a browser, AirDrop or a chat app arrives with `com.apple.quarantine` set, and
-macOS refuses it with **"Claude Bot is damaged and can't be opened."** Nothing is damaged:
-the message is what Gatekeeper says about an unsigned bundle it cannot validate.
+`claude-bot-<version>-<arch>-unsigned.dmg` — named that way on purpose. A build that has travelled
+through a browser, AirDrop or a chat app arrives with `com.apple.quarantine` set, and macOS refuses
+it with **"Claude Bot is damaged and can't be opened."** Nothing is damaged: that is what Gatekeeper
+says about an unsigned bundle it cannot validate.
 
 Right-click → Open does *not* help — that gesture overrides a policy decision, and this is a
 signature-validation failure. The recipient's one-line fix is:
@@ -61,7 +77,6 @@ xattr -dr com.apple.quarantine "/Applications/Claude Bot.app"
 Only run that on a build you compiled yourself or got from someone you trust; the same command
 works just as well on a trojaned copy, which is precisely what code signing exists to tell you
 apart. Building locally (`npm run pack:mac`) sets no quarantine flag and needs none of this.
-Background and the CI lever are in [docs/DESIGN.md §5.9](docs/DESIGN.md).
 
 ---
 
@@ -89,7 +104,7 @@ claude -p                      # the prompt arrives on STDIN, never in argv
   [--resume <session-id>]
   [--model …] [--permission-mode …]
   [--allowedTools …] [--disallowedTools …]
-  [--mcp-config '<json>']      # the handoff bridge
+  [--mcp-config <path>]        # the handoff bridge, via a 0600 file
 ```
 
 Simple lifecycle, trivial cancellation (the whole process **group** is signalled, so nothing is
@@ -119,6 +134,10 @@ Electron's recommended update path is …
 Now respond to the newest message addressed to you.
 ```
 
+The watermark tracking "what has this Bot seen" is a **low-water mark** that cannot step over a
+message another Bot is still streaming — otherwise two Bots answering in parallel silently lose
+each other's replies.
+
 ### Deterministic mention routing
 
 `@mentions` are stored **structurally** (`{botId, display, start, end}`), not re-parsed from text,
@@ -128,10 +147,9 @@ then the only idle Bot, then the first member.
 
 ### Bot-to-Bot handoffs
 
-The app runs a loopback-only MCP server (random port, per-launch bearer token) exposing
-`send_message_to_bot`, `send_message_to_group` and `list_bots`. A handoff always posts a **visible**
-message in the transcript — no invisible orchestration — and is bounded by a depth limit (3) and a
-per-human-message turn budget (8).
+The app runs a loopback-only MCP server exposing `send_message_to_bot`, `send_message_to_group`
+and `list_bots`. A handoff always posts a **visible** message in the transcript — no invisible
+orchestration — and is bounded by a depth limit (3) and a per-human-message turn budget (8).
 
 ---
 
@@ -156,16 +174,22 @@ docs/
 
 ## Security posture
 
-`contextIsolation: true`, `nodeIntegration: false`, a strict CSP, no raw HTML from Bot output,
-every IPC input Zod-validated in main, every process spawned with an argument array and
-`shell: false`, and external links restricted to `http`/`https`/`mailto`. The MCP control server
-binds `127.0.0.1` only and rejects anything without its per-launch token.
+`contextIsolation: true`, `nodeIntegration: false`, `sandbox: true`, and the renderer is served
+from a private `app://` scheme so CSP `'self'` means the app bundle rather than every file on the
+machine. No raw HTML from Bot output, every IPC input Zod-validated in main, every process spawned
+with an argument array and `shell: false`, external links restricted to `http`/`https`/`mailto`.
+The MCP control server binds `127.0.0.1` only, and each turn gets its own bearer token written to a
+`0600` file rather than passed on a command line where `ps` would show it.
 
 Bots are **not** a security boundary: they run as your OS user with whatever permissions your
-Claude Code configuration grants. `bypassPermissions` is deliberately not exposed anywhere in the
-UI.
+Claude Code configuration grants. `bypassPermissions` is deliberately not exposed anywhere in the UI.
 
 ## Not in v1
 
 No cloud computer, no hosted backend, no cross-device sync, no scheduled routines, no account
-system, no billing. See PRD §5.
+system, no billing. See [the PRD](claude-bot-prd.md) §5.
+
+---
+
+*Grok Bot is a product of xAI. This project is not affiliated with or endorsed by xAI — it is an
+independent app that borrows the interaction model and runs on Anthropic's Claude Code.*
