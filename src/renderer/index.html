@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Claude Code Bots</title>
+    <!--
+      Strict CSP for the renderer. No remote origins: every asset is bundled and
+      the app has no backend. 'unsafe-inline' is for STYLES only — React writes
+      inline style attributes for the accent-colour variables — and never permits
+      an inline <script>.
+
+      'self' is only meaningful because the built document is served from
+      app://bundle/ (src/main/window.ts). Loaded with loadFile() it was a file://
+      document, and Chromium resolves 'self' for those to file: URLs GENERALLY —
+      measured: fetch('file:///etc/hosts') and an out-of-bundle
+      <script src="file:///tmp/evil.js"> both worked, with no CSP violation, while
+      this very policy was enforcing. Do not go back to loadFile().
+
+      This must stay identical to contentSecurityPolicy() in src/main/window.ts,
+      which is stamped onto the same document as a header. Both are enforced and
+      the browser takes the INTERSECTION, so a directive listed in only one of
+      them silently narrows the other. That drift is why this tag used to carry
+      dev-only relaxations into the shipped build (`ws://localhost:*`,
+      `http://localhost:*`, `file:`) while omitting media-src and worker-src,
+      quietly cancelling the header's versions of those.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self'; media-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+{
+  "_comment": "The app package.json deliberately omits \"type\" so electron-vite emits CJS for main and preload (an ESM preload cannot load under Electron's sandbox). Tests are plain ESM TypeScript run by node --test, so scope module:ESM to this directory only. Without this Node falls back to syntax detection and warns MODULE_TYPELESS_PACKAGE_JSON on every run.",
+  "type": "module"
+}

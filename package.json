@@ -1,0 +1,50 @@
+{
+  "name": "claude-code-bots",
+  "version": "1.0.0",
+  "description": "Your Claude Code team, in a chat app.",
+  "main": "./out/main/index.js",
+  "author": "Claude Code Bots",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "npm run typecheck && electron-vite build",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "test": "node --test --experimental-strip-types \"test/*.test.ts\"",
+    "postinstall": "electron-builder install-app-deps",
+    "dist:dmg": "npm run build && electron-builder --mac",
+    "pack:mac": "npm run build && electron-builder --mac --dir"
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^5.2.0",
+    "@tailwindcss/vite": "4.3.3",
+    "electron": "43.4.1",
+    "electron-builder": "26.15.3",
+    "electron-vite": "5.0.0",
+    "lucide-react": "^1.33.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "vite": "7.3.6",
+    "zod": "4.4.3",
+    "zustand": "^5.0.15",
+    "shiki": "4.4.3",
+    "@shikijs/langs": "4.4.3",
+    "@shikijs/themes": "4.4.3",
+    "@shikijs/rehype": "4.4.3",
+    "@fontsource-variable/inter": "^5.2.8"
+  }
+}

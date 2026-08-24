@@ -1,0 +1,396 @@
+/* ============================================================================
+   Claude Code Bots — design tokens
+   ----------------------------------------------------------------------------
+   Values marked [G] are verbatim from the shipped grok.com / x.ai CSS or were
+   measured from shipped product screenshots. [L] are from Linear's shipped CSS.
+   [C] are chosen here to match the same language where no public value exists.
+
+   Three rules the tokens encode. Do not violate them:
+     1. Surfaces separate by LIGHTNESS, never by a solid border. Every divider is
+        translucent white (dark) / black (light) at 8% / 14% / 20%.
+     2. --white is #FCFCFC, not #FFFFFF. The 99% white is why every surface reads
+        soft. The ONLY pure white in the app is the avatar eyes.
+     3. Emphasis weight is 550 — not 600, not 700.
+   ============================================================================ */
+
+:root {
+  /* ---- Raw ramp: pure neutral (hue-free) ---------------------------- [G] */
+  --n-50: #f7f7f7;
+  --n-100: #f2f2f2;
+  --n-150: #e8e8e8;
+  --n-200: #dedede;
+  --n-250: #c7c7c7;
+  --n-300: #9e9e9e;
+  --n-400: #858585;
+  --n-500: #636363;
+  --n-600: #474747;
+  --n-700: #363636;
+  --n-800: #292929;
+  --n-900: #212121;
+  --n-950: #141414;
+  --n-1000: #050505;
+
+  /* ---- Raw ramp: blue-tinted gray (228deg) -------------------------- [G] */
+  --g-300: #9b9ca1;
+  --g-400: #828387;
+  --g-500: #616265;
+  --g-600: #48494b;
+  --g-700: #343537;
+  --g-800: #222325;
+  --g-900: #1b1b1d;
+  --g-950: #101113;
+  --g-1000: #040406;
+
+  --white: #fcfcfc; /* [G] 99% white, NOT #fff */
+  --black: #050505; /* [G] */
+
+  /* ---- Brand ------------------------------------------------------------ */
+  --brand-hero: #80bdfc; /* cornflower field */
+  --brand-hero-lift: #e9f3fd;
+  --brand-hero-deep: #6fb5fd;
+  --solar: #ff640a; /* [G] used ONLY for needs-attention */
+
+  /* ---- Bot avatar palette ------------------------------------------ [G]
+     Sampled from shipped bot avatars; lands on the Tailwind *-500 family. */
+  --av-violet: #8b5cf6;
+  --av-blue: #2e90fa;
+  --av-cyan: #06b6d4;
+  --av-emerald: #22c55e;
+  --av-teal: #14b8a6;
+  --av-amber: #f59e0b;
+  --av-orange: #f97316;
+  --av-rose: #f5254c;
+  --av-pink: #ec4899;
+  --av-indigo: #6366f1;
+  --av-lime: #84cc16;
+  --av-mint: #34d399;
+  --av-eye: #ffffff; /* the one pure white in the product [G] */
+
+  /* ---- Typography -------------------------------------------------------
+     Universal Sans (the real face) is commercially licensed. Inter Variable is
+     the substitute because it exposes the 550 axis value the design relies on. */
+  --font-ui: 'Inter Variable', 'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont,
+    'Segoe UI Variable Text', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas,
+    monospace;
+  --font-emoji: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+
+  --font-features: 'cv01', 'cv02', 'ss03'; /* [L] de-Helvetica-izes Inter */
+  --font-variations: 'opsz' auto;
+
+  --fw-regular: 400; /* [G] */
+  --fw-medium: 510; /* [L] sidebar rows, section headings */
+  --fw-emphasis: 550; /* [G] THE emphasis weight */
+  --fw-strong: 590; /* [L] unread titles, badges only */
+
+  /* Tracking goes MORE negative as size drops — screen convention. [L] */
+  --fs-nano: 10px;
+  --lh-nano: 14px;
+  --ls-nano: -0.015em;
+  --fs-micro: 12px;
+  --lh-micro: 16px;
+  --ls-micro: -0.013em;
+  --fs-meta: 13px;
+  --lh-meta: 18px;
+  --ls-meta: -0.01em;
+  --fs-chrome: 14px;
+  --lh-chrome: 20px;
+  --ls-chrome: -0.011em;
+  --fs-ui: 15px;
+  --lh-ui: 22px;
+  --ls-ui: -0.011em;
+  --fs-title: 16px;
+  --lh-title: 22px;
+  --ls-title: -0.013em;
+  --fs-h1: 20px;
+  --lh-h1: 26px;
+  --ls-h1: -0.018em;
+  --fs-hero: 28px;
+  --lh-hero: 34px;
+  --ls-hero: -0.022em;
+  --fs-code: 13px;
+  --lh-code: 20px;
+
+  /* ---- Spacing: 4px base grid --------------------------------------- [G] */
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 6px;
+  --sp-4: 8px;
+  --sp-5: 10px;
+  --sp-6: 12px;
+  --sp-7: 14px;
+  --sp-8: 16px;
+  --sp-9: 20px;
+  --sp-10: 24px;
+  --sp-11: 32px;
+  --sp-12: 40px;
+  --sp-13: 48px;
+  --sp-14: 64px;
+  --sp-15: 80px;
+
+  --gutter: 24px; /* [G] --content-gutter */
+  --content-max: 704px; /* [G] 44rem */
+  --content-max-narrow: 608px; /* [G] 38rem, below 1100px window */
+
+  /* ---- Layout ------------------------------------------------------- [G] */
+  --sidebar-w: 248px; /* [G] 15.5rem */
+  --sidebar-rail-w: 56px;
+  --details-w: 320px;
+  --header-h: 56px; /* [G] */
+  --row-h: 60px;
+  --composer-pill-h: 44px;
+
+  /* ---- Radii -------------------------------------------------------- [G] */
+  --r-2: 4px;
+  --r-3: 6px;
+  --r-4: 8px;
+  --r-5: 12px;
+  --r-6: 16px;
+  --r-7: 24px;
+  --r-8: 32px;
+  --r-full: 9999px;
+
+  /* Semantic radii — prefer these over the raw scale */
+  --r-bubble: 18px; /* [G] */
+  --r-card: 20px; /* [G] outer tool card */
+  --r-card-inner: 14px; /* [G] nested artifact panel */
+  --r-button: 14px; /* [G] */
+  --r-row: 8px;
+  --r-input: 22px; /* composer pill = height / 2 */
+  --r-popover: 12px; /* [L] */
+  --r-chip: 999px;
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --dur-instant: 0ms; /* [L] highlight fade-IN is zero */
+  --dur-fast: 100ms; /* [L] hover, reveal */
+  --dur-exit: 150ms; /* [L] highlight fade-out */
+  --dur-base: 175ms; /* [L] dialog scale in/out */
+  --dur-slow: 250ms; /* [L] panel slide */
+  --dur-shimmer: 2000ms;
+
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* [L] default */
+  --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1); /* [L] panels */
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1); /* [L] overlays */
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+
+  /* ---- Z ladder ----------------------------------------------------- [L] */
+  --z-base: 1;
+  --z-sticky: 50;
+  --z-scrollbar: 75;
+  --z-header: 100;
+  --z-overlay: 500;
+  --z-popover: 600;
+  --z-palette: 650;
+  --z-dialog-scrim: 699;
+  --z-dialog: 700;
+  --z-toast: 800;
+  --z-tooltip: 1100;
+
+  /* ---- Scrollbar ------------------------------------------------ [G][L] */
+  --sb-size: 6px; /* [G] */
+  --sb-size-active: 10px; /* [L] */
+}
+
+/* ============================================================================
+   DARK THEME — the default. Everything below is a semantic alias.
+   ============================================================================ */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg-app: var(--g-950); /* #101113 [G] window ground */
+  --bg-app-alt: #18191b; /* [G] */
+  --surface-0: var(--n-1000); /* #050505 [G] transcript ground */
+  --surface-1: var(--n-950); /* #141414 [G] sidebar, side panel */
+  --surface-2: var(--n-900); /* #212121 [G] raised row, agent bubble */
+  --surface-3: var(--n-700); /* #363636 [G] popover, menu, elevated */
+  --surface-hover: rgba(255, 255, 255, 0.06);
+  --surface-active: rgba(255, 255, 255, 0.1);
+
+  --input-bg: #313234; /* [G] */
+  --input-bg-hover: #36383a; /* [G] */
+  --input-border: #444446; /* [G] */
+  --input-border-hover: #707172; /* [G] */
+
+  --fg-primary: var(--white); /* [G] */
+  --fg-secondary: var(--n-300); /* [G] */
+  --fg-tertiary: var(--n-400); /* [G] */
+  --fg-quaternary: var(--n-500);
+  --fg-on-accent: var(--n-1000);
+
+  --border-1: rgba(255, 255, 255, 0.08); /* [G] hairlines */
+  --border-2: rgba(255, 255, 255, 0.14); /* [G] inputs, cards */
+  --border-3: rgba(255, 255, 255, 0.2); /* [G] focus-adjacent */
+
+  --card-bg: rgba(222, 222, 222, 0.08); /* [G] */
+  --card-bg-hover: rgba(222, 222, 222, 0.12);
+  --card-border: rgba(222, 222, 222, 0.06);
+  --chip-bg: rgba(222, 222, 222, 0.05); /* [G] */
+
+  --btn-filled-bg: var(--white); /* [G] */
+  --btn-filled-fg: var(--n-1000);
+  --btn-filled-hover: var(--n-200); /* [G] */
+  --btn-secondary-bg: rgba(255, 255, 255, 0.08); /* [G] */
+  --btn-ghost-hover: rgba(255, 255, 255, 0.08); /* [G] */
+
+  /* The OFF track of a switch. It is NOT --surface-3: a switch is the one
+     control whose whole job is to be readable at a glance from across the
+     row, so the track has to clear WCAG 1.4.11 (3:1) against BOTH the card
+     behind it and the white thumb on top of it. In dark, --surface-3 happens
+     to do that (#363636 under a #fcfcfc thumb is 11.8:1); in light it does
+     not — #e8e8e8 measured 1.19:1 against the thumb and 1.09:1 against the
+     card, i.e. an off switch was invisible. Hence a token of its own, moved
+     one ramp step per theme rather than retuning --surface-3, which paints
+     popovers and menus everywhere else. */
+  --switch-track-off: var(--n-700); /* #363636, unchanged from --surface-3 */
+
+  --overlay: rgba(0, 0, 0, 0.5); /* [G] */
+  --ring: var(--n-600); /* [G] */
+
+  /* Bubbles. Dark is the inversion of the shipped light values. */
+  --bubble-agent-bg: var(--n-900); /* #212121 */
+  --bubble-agent-fg: var(--fg-primary);
+  --bubble-user-bg: var(--white); /* mirrors --btn-filled-bg */
+  --bubble-user-fg: var(--n-1000);
+  --bubble-nested-bg: var(--n-800); /* #292929 */
+
+  --accent: #427eff; /* [G] --fg-electric-blue dark */
+  --accent-soft: rgba(66, 126, 255, 0.12); /* [G] */
+  --link: #89a1f5; /* [G] blue-300 */
+  --fg-success: #8ce38f; /* [G] green-300 */
+  --fg-danger: #f2787e; /* [G] red-300 */
+  --fg-warning: #fdd73f; /* [G] yellow-300 */
+  --fg-positive: #28c8c8; /* [G] teal-300 */
+  --attention: var(--solar);
+
+  /* Dark shadows are BIGGER blur and MUCH higher alpha than light. [L] */
+  --shadow-low: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 24px rgba(0, 0, 0, 0.2);
+  --shadow-high: 0 7px 32px rgba(0, 0, 0, 0.35);
+  --shadow-dialog: 0 4px 40px rgba(0, 0, 0, 0.1), 0 3px 20px rgba(0, 0, 0, 0.13),
+    0 3px 12px rgba(0, 0, 0, 0.13), 0 2px 8px rgba(0, 0, 0, 0.13), 0 1px 1px rgba(0, 0, 0, 0.13);
+  --shadow-none: 0 0 0 transparent; /* [L] clean interpolation */
+
+  --sb-thumb: rgba(255, 255, 255, 0.1);
+  --sb-thumb-hover: rgba(255, 255, 255, 0.2);
+  --sb-thumb-active: rgba(255, 255, 255, 0.4);
+
+  --focus-ring-color: var(--accent);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* ============================================================================
+   LIGHT THEME — complete mirror, same translucent-border principle.
+   ============================================================================ */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-app: var(--n-50); /* [G] */
+  --bg-app-alt: #fdfdfc; /* [G] */
+  --surface-0: var(--white); /* [G] */
+  --surface-1: var(--n-50); /* [G] */
+  --surface-2: var(--n-100); /* [G] */
+  --surface-3: var(--n-150); /* [G] */
+  --surface-hover: rgba(0, 0, 0, 0.04);
+  --surface-active: rgba(0, 0, 0, 0.07);
+
+  --input-bg: #ffffff; /* [G] */
+  --input-bg-hover: var(--n-50);
+  --input-border: #e3e3e3; /* [G] */
+  --input-border-hover: var(--n-250);
+
+  /* The text ramp is the shipped light ramp shifted ONE STEP DARKER
+     (n-500/400/300 -> n-600/500/400). Not a deviation for its own sake: a mid
+     grey has far less contrast against a near-white ground than against a
+     near-black one, so reusing dark's greys made light a structural mirror with
+     roughly 1.5x less contrast. Measured on --surface-1 (#f7f7f7): quaternary
+     was 2.50:1 — under even WCAG AA-Large — on 12px multi-line helper copy.
+     Shifted, light reads 8.7 / 5.6 / 3.4:1 against dark's 7.6 / 5.5 / 3.4:1 on
+     --surface-0. Four distinct steps in, four distinct steps out: do NOT "fix"
+     this by pulling a single token down, there is no free neutral between
+     n-500 and n-400 and any single move collapses a step. */
+  --fg-primary: var(--n-1000); /* [G] */
+  --fg-secondary: var(--n-600);
+  --fg-tertiary: var(--n-500);
+  --fg-quaternary: var(--n-400);
+  --fg-on-accent: var(--white);
+
+  --border-1: rgba(0, 0, 0, 0.06); /* [G] */
+  --border-2: rgba(0, 0, 0, 0.1); /* [G] */
+  --border-3: rgba(0, 0, 0, 0.15); /* [G] */
+
+  --card-bg: rgba(0, 0, 0, 0.03);
+  --card-bg-hover: rgba(0, 0, 0, 0.05);
+  --card-border: rgba(0, 0, 0, 0.05);
+  --chip-bg: rgba(0, 0, 0, 0.04);
+
+  --btn-filled-bg: var(--n-1000); /* [G] */
+  --btn-filled-fg: var(--white);
+  --btn-filled-hover: var(--n-800);
+  --btn-secondary-bg: var(--n-150); /* [G] */
+  --btn-ghost-hover: rgba(0, 0, 0, 0.04); /* [G] */
+
+  /* Four ramp steps darker than --surface-3 (see the dark block): 3.60:1 under
+     the white thumb and 3.29:1 against a --surface-2 card, which is the same
+     "obviously a control, obviously off" read dark gets for free. */
+  --switch-track-off: var(--n-400); /* #858585 */
+
+  --overlay: rgba(0, 0, 0, 0.2); /* [G] */
+  --ring: var(--n-250);
+
+  --bubble-agent-bg: #f1f2f1; /* [G] measured */
+  --bubble-agent-fg: var(--n-1000);
+  --bubble-user-bg: #0b0b0b; /* [G] measured */
+  --bubble-user-fg: var(--white);
+  --bubble-nested-bg: var(--white); /* [G] */
+
+  --accent: #1a5eff; /* [G] */
+  --accent-soft: rgba(26, 94, 255, 0.1);
+  --link: #3857c7; /* [G] */
+  --fg-success: #009427; /* [G] */
+  --fg-danger: #b72a35; /* [G] */
+  --fg-warning: #946f00; /* [G] */
+  --fg-positive: #017474; /* [G] */
+  --attention: var(--solar);
+
+  --shadow-low: 0 1px 4px -1px rgba(0, 0, 0, 0.09); /* [L] */
+  --shadow-medium: 0 3px 12px rgba(0, 0, 0, 0.09);
+  --shadow-high: 0 7px 24px rgba(0, 0, 0, 0.06);
+  --shadow-dialog: 0 4px 40px rgba(0, 0, 0, 0.06), 0 3px 20px rgba(0, 0, 0, 0.06),
+    0 3px 12px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 1px rgba(0, 0, 0, 0.09);
+  --shadow-none: 0 0 0 transparent;
+
+  --sb-thumb: rgba(0, 0, 0, 0.1);
+  --sb-thumb-hover: rgba(0, 0, 0, 0.2);
+  --sb-thumb-active: rgba(0, 0, 0, 0.3);
+}
+
+/*
+  The renderer stamps data-theme="dark"|"light" on <html> from settings on boot,
+  so there is never an unstyled frame. This media query only covers the instant
+  before that runs when the OS is in light mode.
+*/
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']):not([data-theme='light']) {
+    color-scheme: light;
+    --bg-app: var(--n-50);
+    --surface-0: var(--white);
+    --surface-1: var(--n-50);
+    --surface-2: var(--n-100);
+    --surface-3: var(--n-150);
+    --surface-hover: rgba(0, 0, 0, 0.04);
+    --fg-primary: var(--n-1000);
+    --fg-secondary: var(--n-600); /* keep in step with the light block above */
+    --border-1: rgba(0, 0, 0, 0.06);
+    --border-2: rgba(0, 0, 0, 0.1);
+    --bubble-agent-bg: #f1f2f1;
+    --bubble-user-bg: #0b0b0b;
+    --bubble-user-fg: var(--white);
+    --bubble-nested-bg: var(--white);
+    --btn-filled-bg: var(--n-1000);
+    --btn-filled-fg: var(--white);
+    --switch-track-off: var(--n-400); /* keep in step with the light block above */
+  }
+}

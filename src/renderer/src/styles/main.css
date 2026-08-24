@@ -1,0 +1,484 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import './tokens.css';
+
+/*
+  Tailwind v4 auto-detects sources relative to THIS file's directory and does not
+  walk arbitrarily upward. Without these, a utility class used in a file outside
+  src/renderer is silently dropped — no warning, byte-identical CSS output.
+*/
+@source "../";
+@source "../../../shared";
+
+@theme inline {
+  --color-app: var(--bg-app);
+  --color-s0: var(--surface-0);
+  --color-s1: var(--surface-1);
+  --color-s2: var(--surface-2);
+  --color-s3: var(--surface-3);
+  --color-fg: var(--fg-primary);
+  --color-fg-2: var(--fg-secondary);
+  --color-fg-3: var(--fg-tertiary);
+  --color-accent: var(--accent);
+  --color-attention: var(--attention);
+  --color-danger: var(--fg-danger);
+  --color-success: var(--fg-success);
+  --color-warning: var(--fg-warning);
+
+  --radius-bubble: var(--r-bubble);
+  --radius-card: var(--r-card);
+  --radius-row: var(--r-row);
+
+  --font-ui: var(--font-ui);
+  --font-mono: var(--font-mono);
+
+  --text-nano: var(--fs-nano);
+  --text-micro: var(--fs-micro);
+  --text-meta: var(--fs-meta);
+  --text-chrome: var(--fs-chrome);
+  --text-ui: var(--fs-ui);
+  --text-title: var(--fs-title);
+}
+
+/* ============================================================================
+   Base
+   ============================================================================ */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-app);
+  color: var(--fg-primary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--ls-ui);
+  font-weight: var(--fw-regular);
+  font-feature-settings: var(--font-features);
+  font-variation-settings: var(--font-variations);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+  /* Desktop-app convention: text is not selectable unless it is content. */
+  user-select: none;
+  cursor: default;
+}
+
+.selectable,
+input,
+textarea,
+[contenteditable] {
+  user-select: text;
+  cursor: auto;
+}
+
+/*
+  These element resets MUST live in `@layer base`.
+
+  Unlayered CSS beats every layered rule regardless of specificity, and Tailwind
+  puts its utilities in `@layer utilities` — so an unlayered `button { background:
+  none }` silently outranks every `bg-*` and `hover:bg-*` class in the app. The
+  symptom is not subtle once you see it: every filled button renders as bare
+  text, so onboarding's primary "Get started" call to action looked like a label.
+  It also cost two local workarounds elsewhere before the cause was found.
+*/
+@layer base {
+  button {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: default;
+  }
+
+  input,
+  textarea {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    outline: none;
+  }
+}
+
+/* ============================================================================
+   Focus — outline (not box-shadow) so the ring follows border-radius for free
+   and never affects layout. [L]
+   ============================================================================ */
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/*
+  A dialog parks focus on ITSELF when it contains no `[data-autofocus]` target
+  (see the fallback in ui/Modal's useFocusTrap). That element is `tabindex="-1"`:
+  the user never Tabbed to it, so painting the 2px accent ring around the entire
+  dialog reads as a rendering artifact rather than as a focus indicator — which
+  is exactly how the Keyboard Shortcuts sheet first shipped. The dialog's own
+  `outline-none` class CANNOT do this: the rule above is UNLAYERED and outranks
+  every Tailwind utility (@layer utilities), the same trap documented for
+  `.icon-btn` below.
+*/
+[role='dialog'][tabindex='-1']:focus-visible {
+  outline: none;
+}
+
+/*
+  Same argument for a focusable separator. The sidebar's resize handle is a 6px
+  strip that runs the full height of the window, so the global ring painted a
+  floor-to-ceiling blue rectangle down the sidebar edge the moment it was Tabbed
+  to — three parallel vertical lines that read as a rendering artifact, not as
+  focus. The handle already draws its own indicator (a 2px `--accent` line via
+  `focus-visible:after`), which is the whole indicator it needs. This rule has to
+  be UNLAYERED for the same reason as the block above: Tailwind's `outline-none`
+  utility lives in @layer utilities and loses to the unlayered :focus-visible
+  rule no matter how specific it is — verified at runtime, the class changed
+  nothing.
+*/
+[role='separator']:focus-visible {
+  outline: none;
+}
+
+/*
+  NOTE: this block deliberately does NOT set `border-radius: inherit`.
+  It used to, and it was wrong twice over. An outline already follows the
+  element's own radius for free, so the declaration bought nothing — but it
+  MUTATED the focused element's geometry: a transparent <input> inside a rounded
+  field borrowed the field's 12px radius onto its own ~20px-tall box and painted
+  a blue stadium around the TEXT, inset from the field's edges; and because this
+  block is unlayered while Tailwind's utilities live in @layer utilities, it also
+  beat every `rounded-*` class, so a `rounded-full` IconButton turned into a hard
+  square the moment it took keyboard focus. Give an element a radius of its own
+  instead of inheriting one.
+
+  A composite field — a bordered wrapper containing a transparent control plus an
+  icon and/or a trailing button — moves the ring onto the wrapper, which is the
+  box the user perceives as "the field". `:has(:focus-visible)` rather than
+  `:focus-within` so a mouse click on a trailing clear button does not light it.
+*/
+.field:has(> input:focus-visible),
+.field:has(> textarea:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.field > input:focus-visible,
+.field > textarea:focus-visible {
+  outline: none;
+}
+
+/* ============================================================================
+   Scrollbars — 6px, growing to 10px on hover. Transparent track.
+   ============================================================================ */
+
+.scroller {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) transparent;
+  overscroll-behavior: contain;
+}
+
+::-webkit-scrollbar {
+  width: var(--sb-size);
+  height: var(--sb-size);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb);
+  border-radius: var(--r-full);
+  transition: background var(--dur-fast) var(--ease-out-quad);
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--sb-thumb-active);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ============================================================================
+   Window chrome. Anything interactive inside a drag region MUST be no-drag —
+   drag regions swallow every pointer event, so an overlapping button emits no
+   clicks and no hover.
+   ============================================================================ */
+
+.drag {
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* ============================================================================
+   Shared primitives used across component lanes
+   ============================================================================ */
+
+/* Active/selected row pill. A ::after pseudo-element rather than a background
+   on the row itself: the 2px vertical inset keeps consecutive selected rows
+   from touching, the radius applies to the pill rather than the row box, and
+   z-index:-1 keeps the text crisp above it. [L] */
+.row-pill {
+  position: relative;
+  isolation: isolate;
+}
+
+.row-pill::after {
+  content: '';
+  position: absolute;
+  inset: 2px 0;
+  border-radius: var(--r-row);
+  background: transparent;
+  z-index: -1;
+  transition: background var(--dur-fast) var(--ease-out-quad);
+}
+
+.row-pill:hover::after {
+  background: var(--surface-hover);
+}
+
+.row-pill[data-selected='true']::after {
+  background: var(--surface-2);
+}
+
+/* NOTE: the 32px icon button's fills used to live here as unlayered
+   `.icon-btn[data-variant]` rules, purely to outrank the unlayered `button`
+   reset that was eating every Tailwind `bg-*`. That reset is in `@layer base`
+   now, so IconButton paints from ordinary utilities and those rules are gone.
+   Do not add a global `.icon-btn` back: unlayered, it would silently outrank
+   anything a caller passes through `className`. */
+
+/* Hover action bars stay in the DOM and toggle opacity only — display:none
+   would break focus traversal and cause layout shift. */
+.hover-actions {
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out-quad);
+}
+
+.hover-target:hover .hover-actions,
+.hover-target:focus-within .hover-actions,
+.hover-actions:focus-within {
+  opacity: 1;
+}
+
+/* The sidebar row's ⋯ occupies line 1's trailing cell — the timestamp's own
+   pixels — so the timestamp yields to it. Fading beats reserving a permanent
+   gutter: a 231px sidebar cannot spare 28px on every row for a control that is
+   only visible on hover. Row height stays 60px either way; opacity costs no
+   layout. */
+.row-timestamp {
+  transition: opacity var(--dur-fast) var(--ease-out-quad);
+}
+
+.hover-target:hover .row-timestamp,
+.hover-target:focus-within .row-timestamp {
+  opacity: 0;
+}
+
+@media (hover: none) {
+  .hover-actions {
+    opacity: 1;
+  }
+
+  /* No hover state to key off: the ⋯ is always shown, so the cell is always its. */
+  .row-timestamp {
+    opacity: 0;
+  }
+}
+
+/* The "working" indicator: a gradient sweeping THROUGH the label text.
+   One motion element per indicator — never shimmer plus dots. */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--fg-tertiary) 0%,
+    var(--fg-tertiary) 35%,
+    var(--fg-primary) 50%,
+    var(--fg-tertiary) 65%,
+    var(--fg-tertiary) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer var(--dur-shimmer) linear infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+/* Skeleton sweep. Keep the highlight only a few points lighter than the fill —
+   high-contrast shimmer in dark mode looks cheap. */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.4s var(--ease-out-quad) infinite;
+  border-radius: var(--r-4);
+}
+
+@keyframes skeleton {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Pulsing ring on a working Bot's avatar. */
+.working-ring::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: working-pulse 1.8s var(--ease-out-quad) infinite;
+  pointer-events: none;
+}
+
+@keyframes working-pulse {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.94);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.14);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.14);
+  }
+}
+
+/* Dialogs: 175ms, opacity 0→1 + scale .96→1. [L] */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Invalid action = a 150ms squish, never a shake. [L] */
+@keyframes squish {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+}
+
+.squish {
+  animation: squish var(--dur-exit) var(--ease-out-quad);
+}
+
+/* Streaming caret on the last incomplete markdown block. */
+.stream-caret::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: currentColor;
+  opacity: 0.7;
+  animation: caret 1s steps(2, start) infinite;
+}
+
+@keyframes caret {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Search-hit highlight: fade IN is instant, only the fade-out animates. [L] */
+@keyframes hit-flash {
+  from {
+    background: var(--accent-soft);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+.hit-flash {
+  animation: hit-flash 1.2s var(--ease-out-quad) forwards;
+}
+
+/* ============================================================================
+   Reduced motion. Reset everything, then deliberately re-add nothing —
+   JS-driven scroll springs read the same preference and jump instantly.
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

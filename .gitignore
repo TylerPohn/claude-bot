@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+dist/
+release/
+*.tsbuildinfo
+.vite/
+
+# Electron user data. The app writes its SQLite database, WAL files and Chromium
+# profile into a user-data directory; running the built entry point with
+# `--user-data-dir=<somewhere>` inside the repo drops one of these here. They
+# hold real transcripts and Claude session ids, so they must never be committed.
+*-userdata/
+userdata/
+claude-code-bots.db
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Secrets and credentials. The app itself never stores an Anthropic credential
+# (PRD §6.2) — these patterns exist so a stray local file can never become one.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.mobileprovision
+.credentials.json
+
+# macOS code-signing / notarization material
+build/*.provisionprofile
+build/certs/
+
+# Logs and diagnostics
+*.log
+logs/
+npm-debug.log*
+yarn-error.log*
+
+# Test and coverage output
+coverage/
+.nyc_output/
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~

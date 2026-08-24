@@ -1,0 +1,60 @@
+appId: com.claudecodebots.app
+productName: Claude Code Bots
+directories:
+  buildResources: build
+  output: dist
+files:
+  - out/**/*
+  - package.json
+  # better-sqlite3 v13 is N-API: one prebuilt binary loads in both Node and
+  # Electron with no rebuild. Ship only this platform's, and none of the C
+  # sources — otherwise ~24MB of dead weight lands in the asar.
+  - '!node_modules/better-sqlite3/prebuilds/*'
+  - node_modules/better-sqlite3/prebuilds/${platform}-${arch}.node
+  - '!node_modules/better-sqlite3/deps${/*}'
+  - '!node_modules/better-sqlite3/src${/*}'
+  - '!node_modules/better-sqlite3/build/Release/obj${/*}'
+asarUnpack:
+  - resources/**
+  - '**/*.node'
+mac:
+  # `null` = deterministically skip signing. Leaving this UNSET is the dangerous
+  # value: electron-builder would search the keychain, so a developer who happens
+  # to hold a Developer ID gets a signed build and everyone else does not.
+  #
+  # There is no Developer ID for this project, so nothing produced here can pass
+  # Gatekeeper once it has been downloaded: the bundle keeps the linker's ad-hoc
+  # signature with no sealed resources, and `spctl -a -t exec` rejects it with
+  # "code has no resources but signature indicates they must be present" — which
+  # macOS shows the recipient as "is damaged and can't be opened". That is a
+  # validation failure, not a policy one, so right-click → Open does NOT clear
+  # it; only `xattr -dr com.apple.quarantine` does (README, docs/DESIGN.md §5.9).
+  #
+  # Since that is the truth, the artifact says so in its own filename rather than
+  # posing as a release, and only ONE of them is built: the `zip` target existed
+  # for a Squirrel.Mac update feed this app has no publish config for, and all it
+  # added was a second download that fails in exactly the same way.
+  identity: null
+  target:
+    - dmg
+  artifactName: ${name}-${version}-${arch}-unsigned.${ext}
+  category: public.app-category.developer-tools
+  darkModeSupport: true
+  extendInfo:
+    NSAppleEventsUsageDescription: Claude Code Bots opens Terminal so you can sign in to Claude Code.
+dmg:
+  # The mounted volume names the state of the build, so a recipient reads
+  # "unsigned" in the Finder title bar before they drag anything anywhere.
+  title: ${productName} ${version} (unsigned)
+win:
+  target:
+    - nsis
+  executableName: claude-code-bots
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  createDesktopShortcut: always
+linux:
+  target:
+    - AppImage
+  category: Development
