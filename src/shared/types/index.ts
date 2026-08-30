@@ -30,8 +30,17 @@ export const BOT_SHAPES = [
 
 export type BotShape = (typeof BOT_SHAPES)[number]
 
-/** Permission modes we expose in normal UI. `bypassPermissions` is deliberately absent. */
-export type PermissionMode = 'default' | 'acceptEdits' | 'plan'
+/**
+ * Permission modes the UI can set.
+ *
+ * `bypassPermissions` — shown as "YOLO" everywhere a human reads it — turns every
+ * permission check off for that Bot's turns. It is a real Claude Code mode and
+ * reaches the CLI as `--permission-mode bypassPermissions`, the flag form of
+ * `--dangerously-skip-permissions`; the runtime needs no special case for it
+ * (`buildClaudeArgs` forwards any mode that is not `default`). Every surface that
+ * renders a mode name treats it as its own tone, not a fourth ordinary choice.
+ */
+export type PermissionMode = 'default' | 'acceptEdits' | 'plan' | 'bypassPermissions'
 
 /** Model preference. `default` means "don't pass --model, use the user's Claude Code default". */
 export type ModelPreference = 'default' | 'opus' | 'sonnet' | 'haiku' | (string & {})

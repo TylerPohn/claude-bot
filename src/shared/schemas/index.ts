@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { BOT_ACCENTS, BOT_SHAPES } from '../types'
 
 export const avatarTypeSchema = z.enum(['shape', 'emoji', 'initials', 'image'])
-export const permissionModeSchema = z.enum(['default', 'acceptEdits', 'plan'])
+export const permissionModeSchema = z.enum(['default', 'acceptEdits', 'plan', 'bypassPermissions'])
 export const botAccentSchema = z.enum(BOT_ACCENTS)
 export const botShapeSchema = z.enum(BOT_SHAPES)
 export const conversationTypeSchema = z.enum(['direct', 'group'])

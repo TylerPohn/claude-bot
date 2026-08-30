@@ -76,7 +76,12 @@ function oneOf<T extends string>(allowed: readonly T[]) {
 }
 
 const APPEARANCES: readonly Appearance[] = ['system', 'light', 'dark']
-const PERMISSION_MODES: readonly PermissionMode[] = ['default', 'acceptEdits', 'plan']
+const PERMISSION_MODES: readonly PermissionMode[] = [
+  'default',
+  'acceptEdits',
+  'plan',
+  'bypassPermissions'
+]
 
 /** Free-form so a full model id can be pinned, but it ends up on a command line. */
 function model(value: unknown): ModelPreference | undefined {
