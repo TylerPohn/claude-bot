@@ -41,14 +41,19 @@ const EXAMPLE_DESCRIPTION =
   'Explain blockers briefly. Never push, deploy, or delete data unless explicitly asked.'
 
 /**
- * PRD §15.1. `bypassPermissions` is deliberately absent and must never appear:
- * unrestricted execution is not a normal product path in this app.
+ * PRD §15.1, amended. The list is ordered least to most permissive, and YOLO
+ * (`bypassPermissions`) sits at the bottom on purpose: it is the only option that
+ * removes Claude Code as the execution authority rather than adjusting how much it
+ * asks, so it is drawn in the danger tone and is the only one a single click cannot
+ * select — see the confirm step in `PermissionModePicker`.
  */
 const PERMISSION_OPTIONS: Array<{
   value: PermissionMode
   label: string
   /** Empty for `default`, whose detail is resolved from settings at render. */
   detail: string
+  /** Danger tone, and a confirm between the click and the change. */
+  danger?: boolean
 }> = [
   {
     value: 'plan',
@@ -64,6 +69,13 @@ const PERMISSION_OPTIONS: Array<{
     value: 'acceptEdits',
     label: 'Accept edits',
     detail: 'File edits apply automatically. Commands still follow Claude Code’s rules.'
+  },
+  {
+    value: 'bypassPermissions',
+    label: 'YOLO',
+    detail:
+      'Every permission check off. Files, commands and network calls all run unattended, as you, anywhere this Bot can reach.',
+    danger: true
   }
 ]
 
@@ -84,14 +96,17 @@ const INHERITED_DETAIL: Record<PermissionMode, string> = {
     'Follows Settings › Claude, which is Ask today: Claude Code’s normal rules, so anything not already allowed is refused and reported back.',
   acceptEdits:
     'Follows Settings › Claude, which is Accept edits today — this Bot applies file edits without asking.',
-  plan: 'Follows Settings › Claude, which is Plan today — this Bot reads and analyses only.'
+  plan: 'Follows Settings › Claude, which is Plan today — this Bot reads and analyses only.',
+  bypassPermissions:
+    'Follows Settings › Claude, which is YOLO today — this Bot runs everything unattended, with no permission checks at all.'
 }
 
 /** The resolved mode, shown as a badge beside “Use app default”. */
 const RESOLVED_BADGE: Record<PermissionMode, string> = {
   default: 'ASK',
   acceptEdits: 'ACCEPT EDITS',
-  plan: 'PLAN'
+  plan: 'PLAN',
+  bypassPermissions: 'YOLO'
 }
 
 /**
@@ -645,12 +660,42 @@ function PermissionModePicker({
   // so every caller of the picker (new sheet, edit sheet) tells the truth
   // without having to remember to.
   const appDefault = useAppStore((s) => s.settings?.defaultPermissionMode) ?? 'default'
+
+  /**
+   * A YOLO click that has not been confirmed yet.
+   *
+   * Every other mode here trades away some asking; this one trades away the
+   * permission system, so it does not get to ride on the same muscle memory as
+   * the radio above it — including the arrow-key sweep through the group, which
+   * fires `change` on every option it passes. `value` is left untouched until
+   * the user answers, so cancelling costs nothing and an accidental keystroke
+   * cannot commit it.
+   */
+  const [pendingYolo, setPendingYolo] = useState(false)
+
+  const select = useCallback(
+    (next: PermissionMode) => {
+      if (next === 'bypassPermissions' && value !== 'bypassPermissions') {
+        setPendingYolo(true)
+        return
+      }
+      setPendingYolo(false)
+      onChange(next)
+    },
+    [onChange, value]
+  )
+
   return (
     <div className="flex flex-col" style={{ gap: 8 }}>
       {PERMISSION_OPTIONS.map((option) => {
         const selected = option.value === value
         const inherits = option.value === 'default'
         const detail = inherits ? INHERITED_DETAIL[appDefault] : option.detail
+        // The danger tone follows what the Bot WILL run as, so “Use app default”
+        // turns red too when the app default is itself YOLO.
+        const danger =
+          option.danger === true || (inherits && appDefault === 'bypassPermissions')
+        const accent = danger ? 'var(--fg-danger)' : 'var(--accent)'
         return (
           // A real radio input inside the label: arrow-key navigation, the
           // roving focus and the group semantics all come for free, and none of
@@ -669,15 +714,25 @@ function PermissionModePicker({
               gap: 10,
               padding: '10px 12px',
               borderRadius: 'var(--r-5)',
-              background: selected ? 'var(--surface-2)' : 'transparent',
-              border: `1px solid ${selected ? 'var(--border-3)' : 'var(--border-1)'}`
+              background: selected
+                ? danger
+                  ? 'rgba(242, 120, 126, 0.10)'
+                  : 'var(--surface-2)'
+                : 'transparent',
+              border: `1px solid ${
+                selected
+                  ? danger
+                    ? 'rgba(242, 120, 126, 0.24)'
+                    : 'var(--border-3)'
+                  : 'var(--border-1)'
+              }`
             }}
           >
             <input
               type="radio"
               name={groupName}
               checked={selected}
-              onChange={() => onChange(option.value)}
+              onChange={() => select(option.value)}
               className="sr-only"
             />
             <span
@@ -686,13 +741,13 @@ function PermissionModePicker({
               style={{
                 width: 16,
                 height: 16,
-                border: `1.5px solid ${selected ? 'var(--accent)' : 'var(--border-3)'}`
+                border: `1.5px solid ${selected ? accent : 'var(--border-3)'}`
               }}
             >
               {selected ? (
                 <span
                   className="block rounded-full"
-                  style={{ width: 8, height: 8, background: 'var(--accent)' }}
+                  style={{ width: 8, height: 8, background: accent }}
                 />
               ) : null}
             </span>
@@ -708,6 +763,14 @@ function PermissionModePicker({
                 >
                   {option.label}
                 </span>
+                {option.danger === true ? (
+                  <TriangleAlert
+                    size={12}
+                    strokeWidth={1.75}
+                    aria-hidden
+                    style={{ color: 'var(--fg-danger)', flexShrink: 0 }}
+                  />
+                ) : null}
                 {/* The resolved mode, so the radio itself says what it runs as.
                     Tinted when that is the permissive one — the whole failure
                     was a Bot reading "Ask" while spawning with acceptEdits. */}
@@ -717,9 +780,11 @@ function PermissionModePicker({
                       fontSize: 'var(--fs-nano)',
                       letterSpacing: 'var(--ls-nano)',
                       color:
-                        appDefault === 'acceptEdits'
-                          ? 'var(--fg-warning)'
-                          : 'var(--fg-tertiary)'
+                        appDefault === 'bypassPermissions'
+                          ? 'var(--fg-danger)'
+                          : appDefault === 'acceptEdits'
+                            ? 'var(--fg-warning)'
+                            : 'var(--fg-tertiary)'
                     }}
                   >
                     {RESOLVED_BADGE[appDefault]}
@@ -740,6 +805,39 @@ function PermissionModePicker({
           </label>
         )
       })}
+
+      {pendingYolo ? (
+        <div className="flex flex-col" style={{ gap: 8 }}>
+          <Note tone="danger" icon={<TriangleAlert size={14} strokeWidth={1.75} />}>
+            YOLO runs this Bot with no permission checks at all: it edits and deletes files
+            and runs whatever commands it writes, unattended, as your OS user and with your
+            credentials. Its working folder is where it starts, not a limit.
+          </Note>
+          <div className="flex" style={{ gap: 8 }}>
+            <Button
+              size="sm"
+              variant="danger"
+              onClick={() => {
+                setPendingYolo(false)
+                onChange('bypassPermissions')
+              }}
+            >
+              Turn every check off
+            </Button>
+            <Button size="sm" onClick={() => setPendingYolo(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {/* The sheet can be reopened long after the confirm was answered, and the
+          selected radio alone is a weak reminder of what was agreed to. */}
+      {value === 'bypassPermissions' && !pendingYolo ? (
+        <Note tone="danger" icon={<TriangleAlert size={14} strokeWidth={1.75} />}>
+          This Bot spawns with <code>--permission-mode bypassPermissions</code> on every turn.
+        </Note>
+      ) : null}
     </div>
   )
 }

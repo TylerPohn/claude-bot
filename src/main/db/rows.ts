@@ -219,7 +219,12 @@ function oneOf<T extends string>(allowed: readonly T[], value: unknown, fallback
 }
 
 const AVATAR_TYPES: readonly AvatarType[] = ['shape', 'emoji', 'initials', 'image']
-const PERMISSION_MODES: readonly PermissionMode[] = ['default', 'acceptEdits', 'plan']
+const PERMISSION_MODES: readonly PermissionMode[] = [
+  'default',
+  'acceptEdits',
+  'plan',
+  'bypassPermissions'
+]
 const CONVERSATION_TYPES: readonly ConversationType[] = ['direct', 'group']
 const AUTHOR_TYPES: readonly AuthorType[] = ['user', 'bot', 'system']
 const MESSAGE_STATUSES: readonly MessageStatus[] = [

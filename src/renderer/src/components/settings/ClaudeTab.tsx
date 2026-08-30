@@ -96,14 +96,17 @@ const MODEL_OPTIONS: Array<{ value: ModelPreference; label: string }> = [
 const PERMISSION_OPTIONS: Array<{ value: PermissionMode; label: string }> = [
   { value: 'default', label: 'Ask — standard Claude Code rules' },
   { value: 'acceptEdits', label: 'Accept edits' },
-  { value: 'plan', label: 'Plan — read and analyse only' }
+  { value: 'plan', label: 'Plan — read and analyse only' },
+  { value: 'bypassPermissions', label: 'YOLO — no permission checks' }
 ]
 
 const PERMISSION_BLURB: Record<PermissionMode, string> = {
   default: 'Claude Code applies its own permission rules, plus the tool lists below.',
   acceptEdits:
     'File edits are applied without asking. Commands are still governed by Claude Code’s rules.',
-  plan: 'Reads and analyses only. Nothing on disk changes, no commands run.'
+  plan: 'Reads and analyses only. Nothing on disk changes, no commands run.',
+  bypassPermissions:
+    'Every permission check is off. Files are written and deleted and commands run unattended, as your OS user, with your credentials.'
 }
 
 /**
@@ -115,13 +118,19 @@ const PERMISSION_BLURB: Record<PermissionMode, string> = {
  * The failure this guards: one change here silently gave every inheriting Bot
  * unattended file-write approval, and nothing anywhere said so.
  */
-const PERMISSION_RANK: Record<PermissionMode, number> = { plan: 0, default: 1, acceptEdits: 2 }
+const PERMISSION_RANK: Record<PermissionMode, number> = {
+  plan: 0,
+  default: 1,
+  acceptEdits: 2,
+  bypassPermissions: 3
+}
 
 /** The mode name as it reads in a sentence about what a Bot will do. */
 const PERMISSION_NAME: Record<PermissionMode, string> = {
   default: 'Ask',
   acceptEdits: 'Accept edits',
-  plan: 'Plan'
+  plan: 'Plan',
+  bypassPermissions: 'YOLO'
 }
 
 export function ClaudeTab({ settings }: { settings: AppSettings }): ReactElement {
@@ -397,8 +406,8 @@ export function ClaudeTab({ settings }: { settings: AppSettings }): ReactElement
           controlId={permissionId}
           description={
             inheriting.length > 0
-              ? `Claude Code remains the execution authority. There is deliberately no bypass option here. This is not only for new Bots: ${pluralize(inheriting.length, 'existing Bot')} left on “Use app default” resolve it the moment they run.`
-              : 'Claude Code remains the execution authority. There is deliberately no bypass option here. It applies to new Bots, and to any Bot left on “Use app default”.'
+              ? `Claude Code remains the execution authority for every mode but YOLO, which removes it. This is not only for new Bots: ${pluralize(inheriting.length, 'existing Bot')} left on “Use app default” resolve it the moment they run.`
+              : 'Claude Code remains the execution authority for every mode but YOLO, which removes it. It applies to new Bots, and to any Bot left on “Use app default”.'
           }
           control={
             <div style={{ width: 240 }}>
@@ -418,11 +427,16 @@ export function ClaudeTab({ settings }: { settings: AppSettings }): ReactElement
                     return
                   }
                   // Widening re-permissions Bots the user is not looking at, and
-                  // no other surface would tell them it happened. Narrowing, and
-                  // any change with nothing inheriting, applies immediately.
+                  // no other surface would tell them it happened. Narrowing
+                  // applies immediately.
+                  //
+                  // YOLO asks even when nothing inherits today: it is the one
+                  // value where the thing being agreed to is not "these Bots get
+                  // a bit more rope" but "the permission system is off", and the
+                  // next Bot created on “Use app default” lands on it silently.
                   if (
-                    inheriting.length > 0 &&
-                    PERMISSION_RANK[next] > PERMISSION_RANK[settings.defaultPermissionMode]
+                    PERMISSION_RANK[next] > PERMISSION_RANK[settings.defaultPermissionMode] &&
+                    (inheriting.length > 0 || next === 'bypassPermissions')
                   ) {
                     setPendingPermission(next)
                     return
@@ -436,25 +450,45 @@ export function ClaudeTab({ settings }: { settings: AppSettings }): ReactElement
           footnote={
             pendingPermission ? (
               <div className="flex flex-col" style={{ gap: 8 }}>
-                <Note tone="warning" icon={<TriangleAlert size={14} strokeWidth={1.75} />}>
-                  {pluralize(inheriting.length, 'Bot')} left on “Use app default” will start running
-                  as{' '}
-                  <strong style={{ fontWeight: 550 }}>{PERMISSION_NAME[pendingPermission]}</strong>.{' '}
-                  {PERMISSION_BLURB[pendingPermission]}
-                  <span className="mt-[4px] block text-[var(--fg-tertiary)]">
-                    {inheriting.map((bot) => bot.name).join(', ')}
-                  </span>
+                <Note
+                  tone={pendingPermission === 'bypassPermissions' ? 'danger' : 'warning'}
+                  icon={<TriangleAlert size={14} strokeWidth={1.75} />}
+                >
+                  {inheriting.length > 0 ? (
+                    <>
+                      {pluralize(inheriting.length, 'Bot')} left on “Use app default” will start
+                      running as{' '}
+                      <strong style={{ fontWeight: 550 }}>
+                        {PERMISSION_NAME[pendingPermission]}
+                      </strong>
+                      . {PERMISSION_BLURB[pendingPermission]}
+                      <span className="mt-[4px] block text-[var(--fg-tertiary)]">
+                        {inheriting.map((bot) => bot.name).join(', ')}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      Nothing inherits this today, but every Bot left on “Use app default” from
+                      here on will run as{' '}
+                      <strong style={{ fontWeight: 550 }}>
+                        {PERMISSION_NAME[pendingPermission]}
+                      </strong>
+                      . {PERMISSION_BLURB[pendingPermission]}
+                    </>
+                  )}
                 </Note>
                 <div className="flex" style={{ gap: 8 }}>
                   <Button
                     size="sm"
-                    variant="filled"
+                    variant={pendingPermission === 'bypassPermissions' ? 'danger' : 'filled'}
                     onClick={() => {
                       save({ defaultPermissionMode: pendingPermission })
                       setPendingPermission(null)
                     }}
                   >
-                    {`Change ${pluralize(inheriting.length, 'Bot')}`}
+                    {inheriting.length > 0
+                      ? `Change ${pluralize(inheriting.length, 'Bot')}`
+                      : `Set the default to ${PERMISSION_NAME[pendingPermission]}`}
                   </Button>
                   <Button size="sm" onClick={() => setPendingPermission(null)}>
                     Cancel

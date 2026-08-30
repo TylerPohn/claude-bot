@@ -41,7 +41,8 @@ import { Input } from '@/components/ui/Input'
 const PERMISSION_LABEL: Record<PermissionMode, string> = {
   plan: 'Plan',
   default: 'Ask',
-  acceptEdits: 'Accept edits'
+  acceptEdits: 'Accept edits',
+  bypassPermissions: 'YOLO'
 }
 
 const MODEL_LABEL: Record<string, string> = {

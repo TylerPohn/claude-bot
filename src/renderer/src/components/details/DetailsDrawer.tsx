@@ -27,7 +27,8 @@ const MODEL_LABEL: Record<string, string> = {
 const PERMISSION_LABEL: Record<PermissionMode, string> = {
   default: 'Ask',
   acceptEdits: 'Accept edits',
-  plan: 'Plan only'
+  plan: 'Plan only',
+  bypassPermissions: 'YOLO — no permission checks'
 }
 
 function modelLabel(model: ModelPreference): string {
